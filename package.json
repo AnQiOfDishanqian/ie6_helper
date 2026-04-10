@@ -17,7 +17,8 @@
     "build:npm": "tsc -p tsconfig.npm.json",
     "test": "vitest run",
     "minify": "terser dist/ie6_helper.bundle.js -o dist/ie6_helper.min.js --compress --mangle --comments '/^!/'",
-    "clean": "rm -rf dist"
+    "clean": "rm -rf dist",
+    "prepare": "husky"
   },
   "keywords": [
     "ie6",
@@ -39,6 +40,7 @@
     "url": "https://github.com/AnQiOfDishanqian/ie6_helper/issues"
   },
   "devDependencies": {
+    "husky": "^9.1.7",
     "jsdom": "^29.0.2",
     "terser": "^5.39.0",
     "typescript": "^6.0.2",
