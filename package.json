@@ -5,14 +5,23 @@
   "main": "dist/ie6_helper.js",
   "types": "dist/ie6_helper.d.ts",
   "browser": "dist/ie6_helper.min.js",
+  "files": [
+    "dist/*.js",
+    "dist/*.d.ts",
+    "LICENSE",
+    "README.md"
+  ],
   "scripts": {
-    "build": "tsc && npm run minify",
+    "build": "npm run build:browser && npm run build:npm",
+    "build:browser": "tsc -p tsconfig.json && npm run minify",
+    "build:npm": "tsc -p tsconfig.npm.json",
     "test": "vitest run",
-    "minify": "terser dist/ie6_helper.js -o dist/ie6_helper.min.js --compress --mangle --comments '/^!/'",
+    "minify": "terser dist/ie6_helper.bundle.js -o dist/ie6_helper.min.js --compress --mangle --comments '/^!/'",
     "clean": "rm -rf dist"
   },
   "keywords": [
     "ie6",
+    "helper",
     "polyfill",
     "es5",
     "es6",
@@ -20,6 +29,15 @@
     "compatibility"
   ],
   "license": "MIT",
+  "author": "AnQiOfDishanqian",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AnQiOfDishanqian/ie6_helper.git"
+  },
+  "homepage": "https://github.com/AnQiOfDishanqian/ie6_helper",
+  "bugs": {
+    "url": "https://github.com/AnQiOfDishanqian/ie6_helper/issues"
+  },
   "devDependencies": {
     "jsdom": "^29.0.2",
     "terser": "^5.39.0",
