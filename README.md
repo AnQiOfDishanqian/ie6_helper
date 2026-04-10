@@ -1,5 +1,7 @@
 # ie6_helper
 
+[![CI](https://github.com/AnQiOfDishanqian/ie6_helper/actions/workflows/ci.yml/badge.svg)](https://github.com/AnQiOfDishanqian/ie6_helper/actions/workflows/ci.yml)
+
 Polyfills to help IE6 use advanced features of the newest ES version.
 
 ## Features
