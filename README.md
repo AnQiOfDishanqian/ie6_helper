@@ -1,8 +1,11 @@
 # ie6_helper
 
 [![CI](https://github.com/AnQiOfDishanqian/ie6_helper/actions/workflows/ci.yml/badge.svg)](https://github.com/AnQiOfDishanqian/ie6_helper/actions/workflows/ci.yml)
+[![npm](https://img.shields.io/npm/v/ie6_helper.svg)](https://www.npmjs.com/package/ie6_helper)
 
 Polyfills to help IE6 use advanced features of the newest ES version.
+
+**[Live Demo](https://anqiofdishanqian.github.io/ie6_helper/)**
 
 ## Features
 
