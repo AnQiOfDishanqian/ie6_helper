@@ -177,21 +177,21 @@ export function polyfillObject(): void {
 
   // Object.isFrozen (ES5)
   if (typeof Object.isFrozen === "undefined") {
-    Object.isFrozen = function (obj: any): boolean {
+    Object.isFrozen = function (_obj: any): boolean {
       return false;
     };
   }
 
   // Object.isSealed (ES5)
   if (typeof Object.isSealed === "undefined") {
-    Object.isSealed = function (obj: any): boolean {
+    Object.isSealed = function (_obj: any): boolean {
       return false;
     };
   }
 
   // Object.isExtensible (ES5)
   if (typeof Object.isExtensible === "undefined") {
-    Object.isExtensible = function (obj: any): boolean {
+    Object.isExtensible = function (_obj: any): boolean {
       return true;
     };
   }
