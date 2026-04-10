@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta charset="utf-8">
+  <title>ie6_helper - Polyfill Demo</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: Consolas, "Courier New", monospace; background: #1a1a2e; color: #e0e0e0; padding: 20px; }
+    h1 { color: #e94560; font-size: 24px; margin-bottom: 5px; }
+    h1 span { color: #0f3460; background: #e94560; padding: 2px 8px; border-radius: 3px; font-size: 14px; }
+    .subtitle { color: #888; font-size: 13px; margin-bottom: 20px; }
+    .section { background: #16213e; border: 1px solid #0f3460; border-radius: 6px; margin-bottom: 15px; overflow: hidden; }
+    .section-title { background: #0f3460; padding: 8px 15px; font-size: 14px; color: #e94560; font-weight: bold; }
+    .section-body { padding: 10px 15px; }
+    .result { margin: 4px 0; padding: 4px 0; border-bottom: 1px solid #0f3460; font-size: 13px; }
+    .result:last-child { border-bottom: none; }
+    .label { color: #53d8fb; }
+    .pass { color: #4ecca3; }
+    .fail { color: #e94560; }
+    .value { color: #f0e68c; }
+    .summary { background: #0f3460; padding: 10px 15px; margin-top: 15px; border-radius: 6px; font-size: 14px; }
+    .summary .pass { font-size: 18px; }
+    .summary .fail { font-size: 18px; }
+  </style>
+</head>
+<body>
+
+<h1>ie6_helper <span>polyfill demo</span></h1>
+<div class="subtitle">Testing all polyfills in the current browser environment</div>
+
+<div id="output"></div>
+
+<script src="ie6_helper.bundle.js"></script>
+<script>
+(function() {
+  var results = [];
+  var passed = 0;
+  var failed = 0;
+
+  function test(name, fn) {
+    try {
+      var result = fn();
+      if (result === true) {
+        passed++;
+        results.push({ name: name, status: "pass", detail: "" });
+      } else {
+        failed++;
+        results.push({ name: name, status: "fail", detail: String(result) });
+      }
+    } catch(e) {
+      failed++;
+      results.push({ name: name, status: "fail", detail: e.message || String(e) });
+    }
+  }
+
+  function show(label, value) {
+    return '<span class="label">' + label + ':</span> <span class="value">' + escapeHtml(String(value)) + '</span>';
+  }
+
+  function escapeHtml(str) {
+    return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+  }
+
+  // ===== Array =====
+  test("Array.isArray([])", function() { return Array.isArray([]) === true; });
+  test("Array.isArray({})", function() { return Array.isArray({}) === false; });
+  test("[1,2,3].indexOf(2)", function() { return [1,2,3].indexOf(2) === 1; });
+  test("[1,2,3,2].lastIndexOf(2)", function() { return [1,2,3,2].lastIndexOf(2) === 3; });
+  test("[1,2,3].forEach", function() { var s=0; [1,2,3].forEach(function(n){s+=n;}); return s === 6; });
+  test("[1,2,3].map(n=>n*2)", function() { return [1,2,3].map(function(n){return n*2;}).join(",") === "2,4,6"; });
+  test("[1,2,3,4].filter(n=>n>2)", function() { return [1,2,3,4].filter(function(n){return n>2;}).join(",") === "3,4"; });
+  test("[2,4,6].every(n=>n%2===0)", function() { return [2,4,6].every(function(n){return n%2===0;}) === true; });
+  test("[1,4,5].some(n=>n%2===0)", function() { return [1,4,5].some(function(n){return n%2===0;}) === true; });
+  test("[1,2,3].reduce((a,b)=>a+b)", function() { return [1,2,3].reduce(function(a,b){return a+b;}) === 6; });
+  test("[1,2,3].reduceRight((a,b)=>a-b)", function() { return [1,2,3].reduceRight(function(a,b){return a-b;}) === 0; });
+  test("[1,2,3,4].find(n=>n>2)", function() { return [1,2,3,4].find(function(n){return n>2;}) === 3; });
+  test("[1,2,3].findIndex(n=>n>2)", function() { return [1,2,3].findIndex(function(n){return n>2;}) === 2; });
+  test("[1,2,3].fill(0)", function() { return [1,2,3].fill(0).join(",") === "0,0,0"; });
+  test("Array.of(1,2,3)", function() { return Array.of(1,2,3).join(",") === "1,2,3"; });
+  test("Array.from('abc')", function() { return Array.from("abc").join(",") === "a,b,c"; });
+
+  // ===== Object =====
+  test("Object.keys({a:1,b:2})", function() { return Object.keys({a:1,b:2}).join(",") === "a,b"; });
+  test("Object.create + getPrototypeOf", function() {
+    var proto = {x:1};
+    var obj = Object.create(proto);
+    return Object.getPrototypeOf(obj) === proto;
+  });
+  test("Object.defineProperty value", function() {
+    var obj = {};
+    Object.defineProperty(obj, "x", {value: 42});
+    return obj.x === 42;
+  });
+  test("Object.is(0, -0)", function() { return Object.is(0, -0) === false; });
+  test("Object.is(NaN, NaN)", function() { return Object.is(NaN, NaN) === true; });
+  test("Object.assign", function() {
+    var r = Object.assign({}, {a:1}, {b:2});
+    return r.a === 1 && r.b === 2;
+  });
+  test("Object.values({a:1,b:2})", function() { return Object.values({a:1,b:2}).sort().join(",") === "1,2"; });
+  test("Object.entries({a:1})", function() { return Object.entries({a:1})[0].join("=") === "a=1"; });
+
+  // ===== String =====
+  test("'  hello  '.trim()", function() { return "  hello  ".trim() === "hello"; });
+  test("'hello world'.startsWith('hello')", function() { return "hello world".startsWith("hello") === true; });
+  test("'hello world'.endsWith('world')", function() { return "hello world".endsWith("world") === true; });
+  test("'hello world'.includes('world')", function() { return "hello world".includes("world") === true; });
+  test("'abc'.repeat(3)", function() { return "abc".repeat(3) === "abcabcabc"; });
+  test("'5'.padStart(3, '0')", function() { return "5".padStart(3, "0") === "005"; });
+  test("'5'.padEnd(3, '0')", function() { return "5".padEnd(3, "0") === "500"; });
+
+  // ===== Function =====
+  test("Function.prototype.bind", function() {
+    var obj = {x: 42};
+    function getX() { return this.x; }
+    var bound = getX.bind(obj);
+    return bound() === 42;
+  });
+
+  // ===== JSON =====
+  test("JSON.stringify({a:1})", function() { return JSON.stringify({a:1}) === '{"a":1}'; });
+  test("JSON.parse roundtrip", function() {
+    var obj = {name:"test", values:[1,2,3]};
+    return JSON.stringify(JSON.parse(JSON.stringify(obj))) === JSON.stringify(obj);
+  });
+  test("JSON.stringify with space", function() {
+    return JSON.stringify({a:1}, null, 2).indexOf("\n") > -1;
+  });
+
+  // ===== Date =====
+  test("Date.now() returns number", function() { return typeof Date.now() === "number"; });
+  test("new Date().toISOString()", function() {
+    return /^\d{4}-\d{2}-\d{2}T/.test(new Date().toISOString());
+  });
+
+  // ===== Console =====
+  test("console.log exists", function() { return typeof console !== "undefined" && typeof console.log === "function"; });
+
+  // ===== requestAnimationFrame =====
+  test("requestAnimationFrame exists", function() { return typeof window.requestAnimationFrame === "function"; });
+  test("cancelAnimationFrame exists", function() { return typeof window.cancelAnimationFrame === "function"; });
+
+  // ===== Utility: createDeferred =====
+  test("createDeferred resolve", function() {
+    var d = ie6_helper.util.createDeferred();
+    var result;
+    d.promise.then(function(v) { result = v; });
+    d.resolve("ok");
+    return result === "ok";
+  });
+
+  // ===== Utility: createMap =====
+  test("createMap set/get/has/delete", function() {
+    var m = ie6_helper.util.createMap();
+    m.set("key", "value");
+    return m.get("key") === "value" && m.has("key") === true && m.delete("key") === true && m.has("key") === false;
+  });
+
+  // ===== Utility: createSet =====
+  test("createSet add/has/delete", function() {
+    var s = ie6_helper.util.createSet();
+    s.add(42);
+    return s.has(42) === true && s.size() === 1 && s.delete(42) === true && s.has(42) === false;
+  });
+
+  // ===== DOM: querySelector =====
+  test("querySelector('#output')", function() {
+    return ie6_helper.dom.querySelector("#output") !== null;
+  });
+
+  // ===== DOM: querySelectorAll =====
+  test("querySelectorAll('div')", function() {
+    return ie6_helper.dom.querySelectorAll("div").length > 0;
+  });
+
+  // ===== Render =====
+  var categories = {
+    "Array": [], "Object": [], "String": [], "Function": [],
+    "JSON": [], "Date": [], "Console": [], "requestAnimationFrame": [],
+    "Utility": [], "DOM": []
+  };
+
+  var catMap = {
+    "Array.isArray": "Array", "Array.of": "Array", "Array.from": "Array",
+    "[1,2,3]": "Array", "Object.": "Object", "'  hello": "String",
+    "'hello": "String", "'abc": "String", "'5'": "String",
+    "Function": "Function", "JSON": "JSON", "Date": "Date",
+    "console": "Console", "requestAnimationFrame": "requestAnimationFrame",
+    "cancelAnimationFrame": "requestAnimationFrame",
+    "createDeferred": "Utility", "createMap": "Utility", "createSet": "Utility",
+    "querySelector": "DOM"
+  };
+
+  for (var i = 0; i < results.length; i++) {
+    var r = results[i];
+    var cat = "Utility";
+    for (var prefix in catMap) {
+      if (r.name.indexOf(prefix) === 0) {
+        cat = catMap[prefix];
+        break;
+      }
+    }
+    if (!categories[cat]) cat = "Utility";
+    categories[cat].push(r);
+  }
+
+  var html = "";
+  for (var cat in categories) {
+    if (categories[cat].length === 0) continue;
+    html += '<div class="section">';
+    html += '<div class="section-title">' + cat + ' (' + categories[cat].length + ')</div>';
+    html += '<div class="section-body">';
+    for (var j = 0; j < categories[cat].length; j++) {
+      var item = categories[cat][j];
+      var statusClass = item.status === "pass" ? "pass" : "fail";
+      var statusText = item.status === "pass" ? "PASS" : "FAIL";
+      html += '<div class="result">';
+      html += '<span class="' + statusClass + '">[' + statusText + ']</span> ';
+      html += item.name;
+      if (item.detail) {
+        html += ' <span class="fail">(' + escapeHtml(item.detail) + ')</span>';
+      }
+      html += '</div>';
+    }
+    html += '</div></div>';
+  }
+
+  html += '<div class="summary">';
+  html += 'Total: ' + results.length + ' | ';
+  html += '<span class="pass">' + passed + ' passed</span> | ';
+  html += '<span class="fail">' + failed + ' failed</span>';
+  html += '</div>';
+
+  document.getElementById("output").innerHTML = html;
+})();
+</script>
+
+</body>
+</html>
