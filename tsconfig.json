@@ -10,7 +10,7 @@
     "forceConsistentCasingInFileNames": true,
     "skipLibCheck": true,
     "ignoreDeprecations": "6.0",
-    "outFile": "./dist/ie6_helper.js"
+    "outFile": "./dist/ie6_helper.bundle.js"
   },
   "include": ["src/**/*"],
   "exclude": ["node_modules", "dist"]
