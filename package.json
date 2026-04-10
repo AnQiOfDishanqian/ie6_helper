@@ -1,0 +1,28 @@
+{
+  "name": "ie6_helper",
+  "version": "1.0.0",
+  "description": "Polyfills to help IE6 use advanced features of the newest ES version",
+  "main": "dist/ie6_helper.js",
+  "types": "dist/ie6_helper.d.ts",
+  "browser": "dist/ie6_helper.min.js",
+  "scripts": {
+    "build": "tsc && npm run minify",
+    "test": "vitest run",
+    "minify": "terser dist/ie6_helper.js -o dist/ie6_helper.min.js --compress --mangle --comments '/^!/'",
+    "clean": "rm -rf dist"
+  },
+  "keywords": [
+    "ie6",
+    "polyfill",
+    "es5",
+    "es6",
+    "es2015",
+    "compatibility"
+  ],
+  "license": "MIT",
+  "devDependencies": {
+    "jsdom": "^29.0.2",
+    "typescript": "^6.0.2",
+    "vitest": "^4.1.4"
+  }
+}
