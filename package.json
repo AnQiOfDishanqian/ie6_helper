@@ -1,6 +1,7 @@
 {
   "name": "ie6_helper",
   "version": "1.0.0",
+  "type": "module",
   "description": "Polyfills to help IE6 use advanced features of the newest ES version",
   "main": "dist/ie6_helper.js",
   "types": "dist/ie6_helper.d.ts",
@@ -15,9 +16,10 @@
     "build": "npm run build:browser && npm run build:npm",
     "build:browser": "tsc -p tsconfig.json && npm run minify",
     "build:npm": "tsc -p tsconfig.npm.json",
-    "test": "vitest run",
+    "lint": "eslint src/",
     "minify": "terser dist/ie6_helper.bundle.js -o dist/ie6_helper.min.js --compress --mangle --comments '/^!/'",
     "clean": "rm -rf dist",
+    "test": "vitest run",
     "prepare": "husky"
   },
   "keywords": [
@@ -40,10 +42,13 @@
     "url": "https://github.com/AnQiOfDishanqian/ie6_helper/issues"
   },
   "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "eslint": "^10.2.0",
     "husky": "^9.1.7",
     "jsdom": "^29.0.2",
     "terser": "^5.39.0",
     "typescript": "^6.0.2",
+    "typescript-eslint": "^8.58.1",
     "vitest": "^4.1.4"
   }
 }
