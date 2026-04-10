@@ -36,7 +36,7 @@ export function polyfillDate(): void {
 
   // Date.prototype.toJSON (ES5)
   if (typeof Date.prototype.toJSON === "undefined") {
-    Date.prototype.toJSON = function (key?: any): string {
+    Date.prototype.toJSON = function (_key?: any): string {
       return this.toISOString();
     };
   }
