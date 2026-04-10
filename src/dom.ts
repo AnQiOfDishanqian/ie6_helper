@@ -43,13 +43,13 @@ export function onDOMContentLoaded(callback: Function): void {
   // doScroll trick - only works when DOM is ready
   try {
     doc.documentElement.doScroll("left");
-  } catch (e) {
+  } catch (_e) {
     // DOM not ready yet, retry
     setTimeout(function () {
       try {
         doc.documentElement.doScroll("left");
         init();
-      } catch (e2) {
+      } catch (_e2) {
         setTimeout(arguments.callee, 50);
       }
     }, 50);
@@ -133,12 +133,12 @@ export function querySelectorAll(selector: string, context?: any): any[] {
 export function polyfillEventListener(): void {
   var win: any = window;
   if (typeof win.addEventListener === "undefined" && typeof win.attachEvent !== "undefined") {
-    (Window as any).prototype.addEventListener = function (type: string, listener: Function, useCapture?: boolean): void {
+    (Window as any).prototype.addEventListener = function (type: string, listener: Function, _useCapture?: boolean): void {
       win.attachEvent("on" + type, function () {
         listener.call(this, window.event);
       });
     };
-    (Window as any).prototype.removeEventListener = function (type: string, listener: Function, useCapture?: boolean): void {
+    (Window as any).prototype.removeEventListener = function (type: string, listener: Function, _useCapture?: boolean): void {
       win.detachEvent("on" + type, listener);
     };
   }
