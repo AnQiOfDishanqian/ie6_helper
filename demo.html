@@ -196,6 +196,32 @@
     return m.get(NaN) === "nan";
   });
 
+  // ===== Set =====
+  test("Set add/has/delete", function() {
+    var s = new Set();
+    s.add(1).add(2).add(3);
+    return s.has(1) === true && s.has(4) === false && s.size === 3;
+  });
+  test("Set deduplicates", function() {
+    var s = new Set();
+    s.add(1).add(1).add(2);
+    return s.size === 2;
+  });
+  test("Set NaN support", function() {
+    var s = new Set();
+    s.add(NaN);
+    s.add(NaN);
+    return s.has(NaN) === true && s.size === 1;
+  });
+  test("Set forEach", function() {
+    var s = new Set();
+    s.add("a");
+    s.add("b");
+    var count = 0;
+    s.forEach(function() { count++; });
+    return count === 2;
+  });
+
   // ===== requestAnimationFrame =====
   test("requestAnimationFrame exists", function() { return typeof window.requestAnimationFrame === "function"; });
   test("cancelAnimationFrame exists", function() { return typeof window.cancelAnimationFrame === "function"; });
@@ -207,13 +233,6 @@
     d.promise.then(function(v) { result = v; });
     d.resolve("ok");
     return result === "ok";
-  });
-
-  // ===== Utility: createSet =====
-  test("createSet add/has/delete", function() {
-    var s = ie6_helper.util.createSet();
-    s.add(42);
-    return s.has(42) === true && s.size() === 1 && s.delete(42) === true && s.has(42) === false;
   });
 
   // ===== DOM: querySelector =====
@@ -230,7 +249,7 @@
   var categories = {
     "Array": [], "Object": [], "String": [], "Function": [],
     "JSON": [], "Date": [], "Console": [], "Promise": [],
-    "Map": [], "requestAnimationFrame": [],
+    "Map": [], "Set": [], "requestAnimationFrame": [],
     "Utility": [], "DOM": []
   };
 
@@ -241,9 +260,10 @@
     "Function": "Function", "JSON": "JSON", "Date": "Date",
     "console": "Console", "Promise": "Promise",
     "Map ": "Map", "Map.": "Map",
+    "Set ": "Set", "Set.": "Set",
     "requestAnimationFrame": "requestAnimationFrame",
     "cancelAnimationFrame": "requestAnimationFrame",
-    "createDeferred": "Utility", "createSet": "Utility",
+    "createDeferred": "Utility",
     "querySelector": "DOM"
   };
 

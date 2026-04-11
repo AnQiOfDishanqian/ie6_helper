@@ -23,6 +23,7 @@ Polyfills to help IE6 use advanced features of the newest ES version.
 - **String**: `startsWith`, `endsWith`, `includes`, `repeat`, `String.raw`
 - **Promise**: `then`, `catch`, `finally`, `Promise.resolve`, `Promise.reject`, `Promise.all`, `Promise.race`, `Promise.allSettled`, `Promise.any`
 - **Map**: `get`, `set`, `has`, `delete`, `clear`, `size`, `forEach`, `keys`, `values`, `entries`
+- **Set**: `add`, `has`, `delete`, `clear`, `size`, `forEach`, `keys`, `values`, `entries`
 - **requestAnimationFrame** / **cancelAnimationFrame**
 
 ### ES2017 Polyfills
@@ -31,7 +32,6 @@ Polyfills to help IE6 use advanced features of the newest ES version.
 
 ### Utility Helpers
 - `createDeferred()` — Promise-like deferred object
-- `createSet()` — Set-like value collection
 
 ### DOM Helpers
 - `onDOMContentLoaded(callback)` — DOMContentLoaded with IE6 doScroll fallback
@@ -107,14 +107,17 @@ All polyfills are applied automatically. You can then use modern JS features:
   map.has("key"); // true
   map.size;       // 1
 
+  // Set (global polyfill)
+  var set = new Set();
+  set.add(1).add(2).add(3);
+  set.has(2);    // true
+  set.size;      // 3
+  set.delete(1); // true
+
   // Utility helpers via the ie6_helper namespace
   var deferred = ie6_helper.util.createDeferred();
   deferred.promise.then(function(value) { alert(value); });
   deferred.resolve("done");
-
-  var set = ie6_helper.util.createSet();
-  set.add(1);
-  set.has(1); // true
 
   // DOM helpers
   ie6_helper.dom.onDOMContentLoaded(function() {
@@ -141,7 +144,7 @@ If you only need specific polyfills, you can call them individually:
 
 ```bash
 npm run build    # Compile TypeScript + minify
-npm run test     # Run unit tests (212 tests)
+npm run test     # Run unit tests (236 tests)
 npm run clean    # Remove dist/
 ```
 
@@ -162,7 +165,7 @@ Designed for **Internet Explorer 6** and similarly ancient browsers. All code:
 - **querySelector/querySelectorAll**: Only supports simple selectors: `#id`, `tag`, `.class`.
 - **Array.from**: Does not support iterable/iterator protocol.
 - **Promise**: Synchronous resolution (no microtask queue) — callbacks execute immediately when the promise is already settled. This differs from native Promises which always schedule callbacks asynchronously.
-- **Map**: `keys()`, `values()`, `entries()` return arrays instead of iterators. Does not support `Symbol.iterator` or `for...of`.
+- **Map / Set**: `keys()`, `values()`, `entries()` return arrays instead of iterators. Does not support `Symbol.iterator` or `for...of`.
 - **classList**: Uses `__defineGetter__` which may not be available in all IE6 configurations.
 
 ## License
