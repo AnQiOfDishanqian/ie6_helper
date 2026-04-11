@@ -20,6 +20,8 @@ import { polyfillConsole } from "./console";
 import { polyfillPromise } from "./promise";
 import { polyfillMap } from "./map";
 import { polyfillSet } from "./set";
+import { polyfillSymbol } from "./symbol";
+import { polyfillWeakMap } from "./weakmap";
 import { polyfillRequestAnimationFrame, createDeferred } from "./utils";
 import { onDOMContentLoaded, querySelector, querySelectorAll, polyfillEventListener, polyfillClassList } from "./dom";
 
@@ -35,6 +37,8 @@ function applyAll(): void {
   polyfillPromise();
   polyfillMap();
   polyfillSet();
+  polyfillSymbol();
+  polyfillWeakMap();
   polyfillRequestAnimationFrame();
   polyfillEventListener();
   polyfillClassList();
@@ -57,6 +61,8 @@ var ie6_helper = {
     promise: polyfillPromise,
     map: polyfillMap,
     set: polyfillSet,
+    symbol: polyfillSymbol,
+    weakMap: polyfillWeakMap,
     requestAnimationFrame: polyfillRequestAnimationFrame,
     eventListener: polyfillEventListener,
     classList: polyfillClassList
