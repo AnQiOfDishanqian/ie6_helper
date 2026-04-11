@@ -222,6 +222,50 @@
     return count === 2;
   });
 
+  // ===== Symbol =====
+  test("Symbol() unique", function() {
+    var a = Symbol("x");
+    var b = Symbol("x");
+    return a !== b;
+  });
+  test("Symbol.for shared", function() {
+    var a = Symbol.for("app");
+    var b = Symbol.for("app");
+    return a === b;
+  });
+  test("Symbol.keyFor", function() {
+    var s = Symbol.for("test");
+    return Symbol.keyFor(s) === "test";
+  });
+  test("Symbol as property key", function() {
+    var sym = Symbol("key");
+    var obj = {};
+    obj[sym] = 42;
+    return obj[sym] === 42;
+  });
+
+  // ===== WeakMap =====
+  test("WeakMap set/get/has", function() {
+    var wm = new WeakMap();
+    var key = {};
+    wm.set(key, "value");
+    return wm.get(key) === "value" && wm.has(key) === true;
+  });
+  test("WeakMap delete", function() {
+    var wm = new WeakMap();
+    var key = {};
+    wm.set(key, 1);
+    return wm.delete(key) === true && wm.has(key) === false;
+  });
+  test("WeakMap isolates instances", function() {
+    var wm1 = new WeakMap();
+    var wm2 = new WeakMap();
+    var key = {};
+    wm1.set(key, "a");
+    wm2.set(key, "b");
+    return wm1.get(key) === "a" && wm2.get(key) === "b";
+  });
+
   // ===== requestAnimationFrame =====
   test("requestAnimationFrame exists", function() { return typeof window.requestAnimationFrame === "function"; });
   test("cancelAnimationFrame exists", function() { return typeof window.cancelAnimationFrame === "function"; });
@@ -249,7 +293,8 @@
   var categories = {
     "Array": [], "Object": [], "String": [], "Function": [],
     "JSON": [], "Date": [], "Console": [], "Promise": [],
-    "Map": [], "Set": [], "requestAnimationFrame": [],
+    "Map": [], "Set": [], "Symbol": [], "WeakMap": [],
+    "requestAnimationFrame": [],
     "Utility": [], "DOM": []
   };
 
@@ -261,6 +306,8 @@
     "console": "Console", "Promise": "Promise",
     "Map ": "Map", "Map.": "Map",
     "Set ": "Set", "Set.": "Set",
+    "Symbol": "Symbol",
+    "WeakMap": "WeakMap",
     "requestAnimationFrame": "requestAnimationFrame",
     "cancelAnimationFrame": "requestAnimationFrame",
     "createDeferred": "Utility",
