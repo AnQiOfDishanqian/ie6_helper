@@ -137,6 +137,65 @@
   // ===== Console =====
   test("console.log exists", function() { return typeof console !== "undefined" && typeof console.log === "function"; });
 
+  // ===== Promise =====
+  test("Promise.resolve", function() {
+    var result;
+    Promise.resolve(42).then(function(v) { result = v; });
+    return result === 42;
+  });
+  test("Promise reject + catch", function() {
+    var reason;
+    Promise.reject("err").catch(function(r) { reason = r; });
+    return reason === "err";
+  });
+  test("Promise.then chain", function() {
+    var result;
+    Promise.resolve(1).then(function(v) { return v + 10; }).then(function(v) { result = v; });
+    return result === 11;
+  });
+  test("Promise.all", function() {
+    var result;
+    Promise.all([Promise.resolve(1), Promise.resolve(2)]).then(function(v) { result = v; });
+    return String(result) === "1,2";
+  });
+  test("Promise.race", function() {
+    var result;
+    Promise.race([Promise.resolve("fast"), Promise.resolve("slow")]).then(function(v) { result = v; });
+    return result === "fast";
+  });
+  test("Promise.finally", function() {
+    var called = false;
+    Promise.resolve("ok").finally(function() { called = true; });
+    return called === true;
+  });
+
+  // ===== Map =====
+  test("Map set/get/has", function() {
+    var m = new Map();
+    m.set("key", "value");
+    return m.get("key") === "value" && m.has("key") === true;
+  });
+  test("Map delete/clear", function() {
+    var m = new Map();
+    m.set("a", 1);
+    m.set("b", 2);
+    m.delete("a");
+    return m.has("a") === false && m.size === 1;
+  });
+  test("Map forEach", function() {
+    var m = new Map();
+    m.set("x", 1);
+    m.set("y", 2);
+    var count = 0;
+    m.forEach(function() { count++; });
+    return count === 2;
+  });
+  test("Map NaN key", function() {
+    var m = new Map();
+    m.set(NaN, "nan");
+    return m.get(NaN) === "nan";
+  });
+
   // ===== requestAnimationFrame =====
   test("requestAnimationFrame exists", function() { return typeof window.requestAnimationFrame === "function"; });
   test("cancelAnimationFrame exists", function() { return typeof window.cancelAnimationFrame === "function"; });
@@ -148,13 +207,6 @@
     d.promise.then(function(v) { result = v; });
     d.resolve("ok");
     return result === "ok";
-  });
-
-  // ===== Utility: createMap =====
-  test("createMap set/get/has/delete", function() {
-    var m = ie6_helper.util.createMap();
-    m.set("key", "value");
-    return m.get("key") === "value" && m.has("key") === true && m.delete("key") === true && m.has("key") === false;
   });
 
   // ===== Utility: createSet =====
@@ -177,7 +229,8 @@
   // ===== Render =====
   var categories = {
     "Array": [], "Object": [], "String": [], "Function": [],
-    "JSON": [], "Date": [], "Console": [], "requestAnimationFrame": [],
+    "JSON": [], "Date": [], "Console": [], "Promise": [],
+    "Map": [], "requestAnimationFrame": [],
     "Utility": [], "DOM": []
   };
 
@@ -186,9 +239,11 @@
     "[1,2,3]": "Array", "Object.": "Object", "'  hello": "String",
     "'hello": "String", "'abc": "String", "'5'": "String",
     "Function": "Function", "JSON": "JSON", "Date": "Date",
-    "console": "Console", "requestAnimationFrame": "requestAnimationFrame",
+    "console": "Console", "Promise": "Promise",
+    "Map ": "Map", "Map.": "Map",
+    "requestAnimationFrame": "requestAnimationFrame",
     "cancelAnimationFrame": "requestAnimationFrame",
-    "createDeferred": "Utility", "createMap": "Utility", "createSet": "Utility",
+    "createDeferred": "Utility", "createSet": "Utility",
     "querySelector": "DOM"
   };
 

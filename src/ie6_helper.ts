@@ -17,7 +17,9 @@ import { polyfillFunction } from "./function";
 import { polyfillJSON } from "./json";
 import { polyfillDate } from "./date";
 import { polyfillConsole } from "./console";
-import { polyfillRequestAnimationFrame, createDeferred, createMap, createSet } from "./utils";
+import { polyfillPromise } from "./promise";
+import { polyfillMap } from "./map";
+import { polyfillRequestAnimationFrame, createDeferred, createSet } from "./utils";
 import { onDOMContentLoaded, querySelector, querySelectorAll, polyfillEventListener, polyfillClassList } from "./dom";
 
 // Apply all prototype / global polyfills
@@ -29,6 +31,8 @@ function applyAll(): void {
   polyfillString();
   polyfillFunction();
   polyfillDate();
+  polyfillPromise();
+  polyfillMap();
   polyfillRequestAnimationFrame();
   polyfillEventListener();
   polyfillClassList();
@@ -48,6 +52,8 @@ var ie6_helper = {
     json: polyfillJSON,
     date: polyfillDate,
     console: polyfillConsole,
+    promise: polyfillPromise,
+    map: polyfillMap,
     requestAnimationFrame: polyfillRequestAnimationFrame,
     eventListener: polyfillEventListener,
     classList: polyfillClassList
@@ -56,7 +62,6 @@ var ie6_helper = {
   // Standalone utility functions (not prototype extensions)
   util: {
     createDeferred: createDeferred,
-    createMap: createMap,
     createSet: createSet
   },
 
