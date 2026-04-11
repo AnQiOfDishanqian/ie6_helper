@@ -21,6 +21,8 @@ Polyfills to help IE6 use advanced features of the newest ES version.
 - **Array**: `find`, `findIndex`, `fill`, `Array.of`, `Array.from`
 - **Object**: `is`, `assign`
 - **String**: `startsWith`, `endsWith`, `includes`, `repeat`, `String.raw`
+- **Promise**: `then`, `catch`, `finally`, `Promise.resolve`, `Promise.reject`, `Promise.all`, `Promise.race`, `Promise.allSettled`, `Promise.any`
+- **Map**: `get`, `set`, `has`, `delete`, `clear`, `size`, `forEach`, `keys`, `values`, `entries`
 - **requestAnimationFrame** / **cancelAnimationFrame**
 
 ### ES2017 Polyfills
@@ -29,7 +31,6 @@ Polyfills to help IE6 use advanced features of the newest ES version.
 
 ### Utility Helpers
 - `createDeferred()` — Promise-like deferred object
-- `createMap()` — Map-like key-value store
 - `createSet()` — Set-like value collection
 
 ### DOM Helpers
@@ -92,14 +93,24 @@ All polyfills are applied automatically. You can then use modern JS features:
   var fn = greet.bind({ name: "IE6" });
   function greet() { return "Hello from " + this.name; }
 
+  // Promise (global polyfill)
+  var p = new Promise(function(resolve) { resolve(42); });
+  p.then(function(v) { alert(v); });           // 42
+
+  Promise.all([p, Promise.resolve(1)])
+    .then(function(results) { alert(results); }); // [42, 1]
+
+  // Map (global polyfill)
+  var map = new Map();
+  map.set("key", "value");
+  map.get("key"); // "value"
+  map.has("key"); // true
+  map.size;       // 1
+
   // Utility helpers via the ie6_helper namespace
   var deferred = ie6_helper.util.createDeferred();
   deferred.promise.then(function(value) { alert(value); });
   deferred.resolve("done");
-
-  var map = ie6_helper.util.createMap();
-  map.set("key", "value");
-  map.get("key"); // "value"
 
   var set = ie6_helper.util.createSet();
   set.add(1);
@@ -130,7 +141,7 @@ If you only need specific polyfills, you can call them individually:
 
 ```bash
 npm run build    # Compile TypeScript + minify
-npm run test     # Run unit tests (162 tests)
+npm run test     # Run unit tests (212 tests)
 npm run clean    # Remove dist/
 ```
 
@@ -150,7 +161,8 @@ Designed for **Internet Explorer 6** and similarly ancient browsers. All code:
 - **Object.freeze / seal / preventExtensions**: Return the object unchanged (no-op). `isFrozen`/`isSealed` return `false`, `isExtensible` returns `true`.
 - **querySelector/querySelectorAll**: Only supports simple selectors: `#id`, `tag`, `.class`.
 - **Array.from**: Does not support iterable/iterator protocol.
-- **createDeferred**: Not a full Promise implementation — no chaining, no `catch`, no `Promise.all`.
+- **Promise**: Synchronous resolution (no microtask queue) — callbacks execute immediately when the promise is already settled. This differs from native Promises which always schedule callbacks asynchronously.
+- **Map**: `keys()`, `values()`, `entries()` return arrays instead of iterators. Does not support `Symbol.iterator` or `for...of`.
 - **classList**: Uses `__defineGetter__` which may not be available in all IE6 configurations.
 
 ## License
