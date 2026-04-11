@@ -24,6 +24,8 @@ Polyfills to help IE6 use advanced features of the newest ES version.
 - **Promise**: `then`, `catch`, `finally`, `Promise.resolve`, `Promise.reject`, `Promise.all`, `Promise.race`, `Promise.allSettled`, `Promise.any`
 - **Map**: `get`, `set`, `has`, `delete`, `clear`, `size`, `forEach`, `keys`, `values`, `entries`
 - **Set**: `add`, `has`, `delete`, `clear`, `size`, `forEach`, `keys`, `values`, `entries`
+- **Symbol**: `Symbol()`, `Symbol.for`, `Symbol.keyFor`, well-known symbols (`iterator`, `toStringTag`, `hasInstance`, etc.)
+- **WeakMap**: `get`, `set`, `has`, `delete`
 - **requestAnimationFrame** / **cancelAnimationFrame**
 
 ### ES2017 Polyfills
@@ -114,6 +116,21 @@ All polyfills are applied automatically. You can then use modern JS features:
   set.size;      // 3
   set.delete(1); // true
 
+  // Symbol (global polyfill)
+  var sym = Symbol("myKey");
+  var obj = {};
+  obj[sym] = "hidden";  // use as property key
+  obj[sym];             // "hidden"
+
+  var shared = Symbol.for("app.token");
+  Symbol.keyFor(shared); // "app.token"
+
+  // WeakMap (global polyfill)
+  var wm = new WeakMap();
+  var key = {};
+  wm.set(key, "metadata");
+  wm.get(key); // "metadata"
+
   // Utility helpers via the ie6_helper namespace
   var deferred = ie6_helper.util.createDeferred();
   deferred.promise.then(function(value) { alert(value); });
@@ -144,7 +161,7 @@ If you only need specific polyfills, you can call them individually:
 
 ```bash
 npm run build    # Compile TypeScript + minify
-npm run test     # Run unit tests (236 tests)
+npm run test     # Run unit tests (273 tests)
 npm run clean    # Remove dist/
 ```
 
@@ -166,6 +183,8 @@ Designed for **Internet Explorer 6** and similarly ancient browsers. All code:
 - **Array.from**: Does not support iterable/iterator protocol.
 - **Promise**: Synchronous resolution (no microtask queue) — callbacks execute immediately when the promise is already settled. This differs from native Promises which always schedule callbacks asynchronously.
 - **Map / Set**: `keys()`, `values()`, `entries()` return arrays instead of iterators. Does not support `Symbol.iterator` or `for...of`.
+- **Symbol**: Not a true primitive — polyfill symbols are unique strings prefixed with `__ie6_symbol_`. `typeof` returns `"string"` instead of `"symbol"`. Use `Symbol._isSymbol(val)` to check.
+- **WeakMap**: Does not hold weak references — entries will not be garbage collected when keys are no longer referenced. Stores values via hidden properties on key objects.
 - **classList**: Uses `__defineGetter__` which may not be available in all IE6 configurations.
 
 ## License
